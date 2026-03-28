@@ -3,7 +3,7 @@
 
 export enum EstadoTarea {
   PENDIENTE = 'PENDIENTE',
-  EN_PROGRESO = 'EN_PROGRESO',
+  EN_PROCESO = 'EN_PROCESO',
   COMPLETADA = 'COMPLETADA'
 }
 

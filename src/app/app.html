@@ -16,57 +16,104 @@
     <div class="col-md-9 bg-light p-5">
       
       @if (mostrarFormulario) {
-        <div class="row justify-content-center mb-5">
-          <div class="col-md-8">
-            <div class="card shadow border-0">
-              <div class="card-header bg-primary text-white py-3">
-                <h2 class="h5 mb-0">Crear Nueva Tarea </h2>
-              </div>
-              <div class="card-body p-4">
-                <div class="mb-3">
-                  <input type="text" class="form-control" [(ngModel)]="nuevaTarea.nombre" #nombreInput="ngModel" required placeholder="Nombre de la tarea">
-                </div>
-                <div class="mb-3">
-                  <textarea class="form-control" [(ngModel)]="nuevaTarea.descripcion" rows="2" placeholder="Descripción..."></textarea>
-                </div>
-                <div class="d-grid">
-                  <button class="btn btn-success" (click)="agregarTarea()" [disabled]="nombreInput.invalid">Guardar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="card-body p-4">
+  <div class="mb-3">
+    <label class="form-label fw-bold">Nombre de la tarea</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      [(ngModel)]="nuevaTarea.nombre" 
+      #nombreInput="ngModel" 
+      #inputNombre
+      required 
+      placeholder="Ej: Estudiar Java"
+      (keydown.enter)="inputDescripcion.focus()"> 
+    
+    @if (nombreInput.invalid && nombreInput.touched) {
+      <div class="form-text text-danger">El nombre es obligatorio.</div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Descripción</label>
+    <textarea 
+      class="form-control" 
+      [(ngModel)]="nuevaTarea.descripcion" 
+      #inputDescripcion
+      rows="2" 
+      placeholder="Detalles de la tarea..."
+      (keydown.enter)="$event.preventDefault(); agregarTarea()">
+    </textarea>
+  </div>
+
+  <div class="d-grid">
+    <button class="btn btn-success" (click)="agregarTarea()" [disabled]="nombreInput.invalid">
+      Guardar 💾
+    </button>
+  </div>
+</div>
       }
 
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-5 fw-bold">Mi Día</h1>
         <span class="text-muted">{{ listaTareas.length }} tareas</span>
       </div>
+<div class="row">
+  @for (tarea of listaTareas; track tarea.id) {
+    <div class="col-12 mb-3">
+      <div class="card shadow-sm border-0 border-start border-4"
+           [class.border-primary]="tarea.estado === 'PENDIENTE'"
+           [class.border-success]="tarea.estado === 'COMPLETADA'">
+        
+        <div class="card-body d-flex justify-content-between align-items-center">
+          
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <button (click)="completarTarea(tarea)" 
+                      class="btn btn-sm rounded-circle border-2 d-flex align-items-center justify-content-center"
+                      style="width: 30px; height: 30px;"
+                      [class.btn-outline-success]="tarea.estado === 'PENDIENTE'"
+                      [class.btn-success]="tarea.estado === 'COMPLETADA'">
+                @if (tarea.estado === 'COMPLETADA') {
+                  <i class="bi bi-check-lg text-white"></i>
+                }
+              </button>
+            </div>
 
-      <div class="row">
-        @for (tarea of listaTareas; track tarea.id) {
-          <div class="col-12 mb-3"> <div class="card shadow-sm border-0 border-start border-4 border-primary">
-              <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="mb-1">{{ tarea.nombre }}</h5>
-                  <p class="mb-0 text-muted small">{{ tarea.descripcion }}</p>
-                  <small class="text-secondary">📅 {{ tarea.fechaInicio | date:'dd/MM' }}</small>
-                </div>
-                <div class="d-flex gap-2">
-                  <span class="badge rounded-pill bg-info text-dark">{{ tarea.estado }}</span>
-                  <button (click)="eliminarTarea(tarea.id)" class="btn btn-outline-danger btn-sm border-0">
-                    <i class="bi bi-trash"></i> Borrar
-                  </button>
-                </div>
-              </div>
+            <div>
+              <h5 class="mb-1" [class.text-decoration-line-through]="tarea.estado === 'COMPLETADA'"
+                  [class.text-muted]="tarea.estado === 'COMPLETADA'">
+                {{ tarea.nombre }}
+              </h5>
+              <p class="mb-0 text-muted small">{{ tarea.descripcion }}</p>
+              <small class="text-secondary">📅 {{ tarea.fechaInicio | date:'dd/MM' }}</small>
             </div>
           </div>
-        } @empty {
-          <div class="text-center py-5">
-            <p class="text-muted">No hay tareas para hoy. ¡Disfruta tu día! ☕</p>
+
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge rounded-pill" 
+                  [class.bg-info]="tarea.estado === 'PENDIENTE'"
+                  [class.bg-success]="tarea.estado === 'COMPLETADA'">
+              {{ tarea.estado }}
+            </span>
+            
+           <button (click)="eliminarTarea(tarea.id!)" 
+        class="btn btn-sm text-danger border-0 p-0 d-flex align-items-center justify-content-center"
+        style="width: 32px; height: 32px;"
+        title="Eliminar tarea">
+  <i class="bi bi-trash3-fill" style="font-size: 1.2rem; display: block;"></i>
+</button>
           </div>
-        }
+
+        </div>
       </div>
+    </div>
+  } @empty {
+    <div class="text-center py-5">
+      <p class="text-muted">No hay tareas para hoy. ¡Disfruta tu día! ☕</p>
+    </div>
+  }
+</div>
 
     </div>
   </div>

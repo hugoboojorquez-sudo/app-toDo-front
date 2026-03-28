@@ -121,4 +121,18 @@ eliminarTarea(id: number | undefined) {
 
 
 
-}
+completarTarea(tarea: Tarea) {
+ const nuevoEstado = tarea.estado === EstadoTarea.PENDIENTE 
+                    ? EstadoTarea.COMPLETADA 
+                    : EstadoTarea.PENDIENTE;
+  console.log('Enviando:', tarea.id, nuevoEstado)
+  if (tarea.id) { // Solo ejecuta si el id existe
+    this.tareaService.cambiarEstado(tarea.id, nuevoEstado).subscribe({
+      next: () => {
+        tarea.estado = nuevoEstado;
+      }
+    });
+  }
+}    
+
+ }

@@ -34,6 +34,18 @@ constructor(private http: HttpClient) {}
   eliminarTarea(id: number): Observable<Tarea> {
     return this.http.delete<Tarea>(`${this.apiUrl}/${id}`);
   }
+
+
+
+  //agregado el lunes 9 de marzo para cambiar el estado de una tarea (PATCH)
+
+
+  cambiarEstado(id: number, estado: string): Observable<Tarea> {
+  return this.http.patch<Tarea>(`${this.apiUrl}/${id}/estado`, { estado });
+
+}
+
+
   
 
 
